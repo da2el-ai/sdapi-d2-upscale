@@ -10,6 +10,14 @@ StableDiffusion webui a1111 の機能拡張ではありません。
 - NAI方式の weight を SD方式に変換する
 - 不要なプロンプトの削除、置換や、プロンプトの追加ができる
 
+
+# 事前準備
+
+StableDiffusion webui a1111 の API機能を使います。
+
+webui の起動オプションに `--api` を付けて起動してください。
+
+
 # インストール
 
 ```
