@@ -4,24 +4,23 @@ from ppretty import ppretty
 from modules.Config import Config
 from modules.WebuiImage import WebuiImage
 from modules.util import scaleTo8
+from modules.prompt import convert_prompt
 
 class Webui:
   @classmethod
-  def i2i_upscale(cls, img_path:str):
+  def i2i_upscale(cls, img_path:str, setting:dict):
 
     WebuiImage.load_image(img_path)
     prompt = WebuiImage.get_prompt()
+    prompt = convert_prompt(prompt, setting)
 
     payload = {
       'prompt': prompt['positive'],
       'negative_prompt': prompt['negative'],
-      'width': scaleTo8(WebuiImage.img.width, Config.upscale),
-      'height': scaleTo8(WebuiImage.img.height, Config.upscale),
-      'steps': 30,
-      'cfg_scale': 7,
-      'denoising_strength': 0.4,
-      'sampler_name': 'DPM++ 2M Karras',
+      'width': scaleTo8(WebuiImage.img.width, setting['upscale']),
+      'height': scaleTo8(WebuiImage.img.height, setting['upscale']),
       'init_images': [WebuiImage.conver_to_b64()],
+      **setting['api_params']
     }
 
     print("-------")

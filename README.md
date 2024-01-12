@@ -1,16 +1,16 @@
 
-KohakuNAI で作った画像を自動でアップスケールする。
+# SDAPI D2 Upscale
+
+KohakuNAI で作った画像を一括でアップスケールする。
 
 単体で動作するスプリプトです。
 StableDiffusion webui a1111 の機能拡張ではありません。
 
+- KohakuNAI の画像からプロンプトを取得
+- NAI方式の weight を SD方式に変換する
+- 不要なプロンプトの削除、置換や、プロンプトの追加ができる
 
-# Features
-
-- プロンプト変換機能を付ける
-  - これが必要で作り始めた
-
-# Install
+# インストール
 
 ```
 > git clone https://github.com/da2el-ai/sdapi-d2-upscale.git
@@ -20,7 +20,54 @@ StableDiffusion webui a1111 の機能拡張ではありません。
 > pip install -r requirements.txt
 ```
 
+
+# 設定
+
+`setting.yml` を編集する。
+共通設定と個別設定がある。
+`setting_list` が個別設定。
+
+```yaml
+# webui url
+webui_url: http://127.0.0.1:7860
+
+# 画像フォルダ
+image_folder: .\image
+
+# ファイル名の最後に付ける識別子
+image_suffix: _upscale
+
+setting_list:
+  # 設定名（フォルダ名にも使う）
+  upscale1.5:
+```
+
+## 個別設定
+
+複数の設定を記入することができる。
+
+設定名は画像フォルダ名にもなるので、フォルダに使える名前にする。
+
+下記の場合 `upscale1.5` が設定名になる。
+画像は `image\upscale1.5` に入れる。
+
+
+```yaml
+setting_list:
+  # 設定名
+  upscale1.5:
+    # apiパラメーター
+    api_params:
+      steps: 30
+```
+
+`api_params` は StableDiffusion webui a1111 の APIパラメーターを記載する。
+詳細は公式ドキュメントを参照。
+[http://127.0.0.1:7860/docs](http://127.0.0.1:7860/docs)
+
+
 # Usage
+
 
 まず仮想環境に入る。
 
@@ -28,16 +75,14 @@ StableDiffusion webui a1111 の機能拡張ではありません。
 > .\venv\Scripts\activate
 ```
 
-`image` フォルダに変換したい画像を入れる
+`image\{設定名}\` に元となる画像を置く。
 
-`setting.yml` をイイ感じに書き換える
-
-スクリプトを実行する
+スクリプトを実行する。
 
 ```
 > python all_upscale.py
 ```
 
-`output` フォルダにアップスケールされた画像が保存される
+`image\{設定名}\output\` にアップスケールされた画像が保存される。
 
 

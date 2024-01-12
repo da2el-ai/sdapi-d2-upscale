@@ -9,7 +9,8 @@ from modules.Config import Config
 
 class WebuiImage:
 
-  filename: str
+  file_name: str
+  dir_name: str
   img = Image.new('RGB', (100,100), 'white')
 
   #
@@ -17,7 +18,8 @@ class WebuiImage:
   #
   @classmethod
   def load_image(cls, img_path:str):
-    cls.filename = os.path.splitext(os.path.basename(img_path))[0]
+    cls.dir_name, cls.file_name = os.path.split(img_path)
+    cls.file_name = os.path.splitext(cls.file_name)[0]
     cls.img = Image.open(img_path)
 
 
@@ -27,11 +29,12 @@ class WebuiImage:
   @classmethod
   def save_from_b64(cls, img_b64, pnginfo):
     image = Image.open(io.BytesIO(base64.b64decode(img_b64.split(",",1)[0])))
+    output_folder = os.path.join(cls.dir_name, 'output')
 
-    if not os.path.exists(Config.output_folder):
-      os.makedirs(Config.output_folder)
+    if not os.path.exists(output_folder):
+      os.makedirs(output_folder)
 
-    img_path = os.path.join(Config.output_folder, cls.filename + Config.image_suffix + '.png')
+    img_path = os.path.join(output_folder, cls.file_name + Config.image_suffix + '.png')
     image.save(img_path, pnginfo=pnginfo)
 
 

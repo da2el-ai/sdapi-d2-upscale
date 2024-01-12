@@ -1,43 +1,57 @@
 # webui url
-webui_url: 'http://192.168.2.174:7860'
+webui_url: http://127.0.0.1:7860
 
 # 画像フォルダ
 image_folder: .\image
 
-# 出力先フォルダ
-output_folder: .\output
-
 # ファイル名の最後に付ける識別子
 image_suffix: _upscale
 
-# アップスケール比率
-upscale: 1.5
+setting_list:
+  # 設定名（フォルダ名にも使う）
+  upscale1.5:
+    # apiパラメーター
+    api_params:
+      steps: 30
+      cfg_scale: 7
+      denoising_strength: 0.4
+      sampler_name: 'DPM++ 2M Karras'
 
-# 追加プロンプト
-add_positive_prompt:
-  - <lora:add_detail:0.5>
+    # アップスケール比率
+    upscale: 1.5
 
-# 削除プロンプト
-remove_positive_prompt:
-  - "{{{{artist:****}}}},"
+    # NAI weight を SD weight に変換するか
+    convert_nai_weight: True
 
-# 置換プロンプト
-replace_positive_prompt:
-  -
-    before: 9yo
-    after: 7yo
+    # 削除プロンプト
+    remove_positive_prompt:
+      - "[[[[[[[[[[[[[[[[[[[ai-generated]]]]]]]]]]]]]]]]]]]"
+      - "{{{{{{{best quality,amazing quality,very aesthetic,absurdres}}}}}}}"
 
-# 追加ネガティブプロンプト
-add_negative_prompt:
-  - test
+    # 置換プロンプト
+    replace_positive_prompt:
+      -
+        before: 14yo
+        after: 10 yo
 
-# 削除ネガティブプロンプト
-remove_negative_prompt:
-  - "lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views,"
+    # 追加プロンプト
+    # add_positive_prompt:
+    #   - "追加したいプロンプト"
 
-# 置換ネガティブプロンプト
-replace_negative_prompt:
-  -
-    before: aaaa
-    after: bbbb
+    # 削除ネガティブプロンプト
+    remove_negative_prompt:
+      - "lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views"
+
+    # 置換ネガティブプロンプト
+    # replace_negative_prompt:
+    #   -
+    #     before: aaaa
+    #     after: bbbb
+
+    # 追加ネガティブプロンプト
+    add_negative_prompt:
+      - "negative_hand-neg,(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
+
+
+
 
