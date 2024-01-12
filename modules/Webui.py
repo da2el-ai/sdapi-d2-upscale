@@ -1,0 +1,68 @@
+import requests
+from PIL import Image, PngImagePlugin
+from ppretty import ppretty
+from modules.Config import Config
+from modules.WebuiImage import WebuiImage
+from modules.util import scaleTo8
+
+class Webui:
+  @classmethod
+  def i2i_upscale(cls, img_path:str):
+
+    WebuiImage.load_image(img_path)
+    prompt = WebuiImage.get_prompt()
+
+    payload = {
+      'prompt': prompt['positive'],
+      'negative_prompt': prompt['negative'],
+      'width': scaleTo8(WebuiImage.img.width, Config.upscale),
+      'height': scaleTo8(WebuiImage.img.height, Config.upscale),
+      'steps': 30,
+      'cfg_scale': 7,
+      'denoising_strength': 0.4,
+      'sampler_name': 'DPM++ 2M Karras',
+      'init_images': [WebuiImage.conver_to_b64()],
+    }
+
+    print("-------")
+    print("file: " + img_path)
+    # print(ppretty(payload))
+
+    response = requests.post(
+      url = f'{Config.webui_url}/sdapi/v1/img2img',
+      json = payload
+    )
+    res_json = response.json()
+
+    if response.status_code == 200:
+      cls.save_images(res_json)
+    else:
+      print ('=== ERROR ===')
+      print(res_json)
+
+
+  #
+  # 画像保存
+  #
+  @classmethod
+  def save_images(cls, res_json):
+
+    for img_b64 in res_json['images']:
+      pnginfo = cls.get_pnginfo(img_b64)
+      WebuiImage.save_from_b64(img_b64, pnginfo)
+
+
+  #
+  # png info 作成
+  #
+  @classmethod
+  def get_pnginfo(cls, img_b64):
+    payload = {
+      "image": "data:image/png;base64," + img_b64
+    }
+
+    pnginfo_res = requests.post(url=f'{Config.webui_url}/sdapi/v1/png-info', json=payload)
+    pnginfo = PngImagePlugin.PngInfo()
+    pnginfo.add_text("parameters", pnginfo_res.json().get("info"))
+
+    return pnginfo
