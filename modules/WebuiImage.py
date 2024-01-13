@@ -1,8 +1,10 @@
 import json
 import io
 import os
+import re
 import base64
 from PIL import Image
+from ppretty import ppretty
 import piexif
 import piexif.helper
 from modules.Config import Config
@@ -59,20 +61,92 @@ class WebuiImage:
   @classmethod
   def get_prompt(cls):
 
-    exif_data = cls.img.info['exif']
-    exif = piexif.load(exif_data)
-
-    exif_comment = (exif or {}).get('Exif', {}).get(piexif.ExifIFD.UserComment, b'')
-    comment = piexif.helper.UserComment.load(exif_comment)
-
+    items = (cls.img.info or {}).copy()
     prompt = {'positive':'', 'negative':''}
 
-    # 生成アプリ毎にプロンプトの取得場所を変える
-    if 'input' in comment:
-      # input があったら KohakuNAI方式
-      comment = comment.split(', Script: Kohaku NAI', 1)[0]
-      json_info = json.loads(comment)
-      prompt['positive'] = json_info.get('input', '')
-      prompt['negative'] = json_info.get('parameters',{}).get('negative_prompt', '')
+    # print("items ///////////////")
+    # print(ppretty(items, seq_length=99))
+
+    if "exif" in items:
+      exif = cls.img.info['exif']
+      exif_data = piexif.load(exif)
+
+      exif_comment = (exif_data or {}).get('Exif', {}).get(piexif.ExifIFD.UserComment, b'')
+      comment = piexif.helper.UserComment.load(exif_comment)
+
+      # print("comment ///////////////")
+      # print(ppretty(comment, seq_length=99))
+
+      if 'Script: Kohaku NAI Client' in comment:
+        (prompt['positive'], prompt['negative']) = cls.__get_prompt_kohaku(comment)
+
+      elif 'Steps: ' in comment:
+        (prompt['positive'], prompt['negative']) = cls.__get_prompt_a1111(comment)
+
+    elif "workflow" in items:
+      (prompt['positive'], prompt['negative']) = cls.__get_prompt_comfy(items)
+
+    elif items.get("Software", None) == "NovelAI":
+      (prompt['positive'], prompt['negative']) = cls.__get_prompt_nai(items)
 
     return prompt
+
+  #
+  # KohakuNAI 画像からプロンプト取得
+  #
+  @classmethod
+  def __get_prompt_kohaku(cls, comment:str):
+    comment = comment.split(', Script: Kohaku NAI', 1)[0]
+    json_info = json.loads(comment)
+
+    return (
+      json_info.get('input', ''),
+      json_info.get('parameters',{}).get('negative_prompt', '')
+    )
+
+  #
+  # webui a1111 画像からプロンプト取得
+  #
+  @classmethod
+  def __get_prompt_a1111(cls, comment:str):
+    params = re.split(r'Negative prompt: |Steps: ', comment)
+
+    return (
+      params[0],
+      params[1] if 'Negative prompt: ' in comment else ''
+    )
+
+  #
+  # NovelAI 画像からプロンプト取得
+  #
+  @classmethod
+  def __get_prompt_nai(cls, items:dict):
+    json_info = json.loads(items["Comment"])
+
+    return (
+      json_info.get('prompt', ''),
+      json_info.get('uc','')
+    )
+
+  #
+  # ComfyUI 画像からプロンプト取得
+  #
+  @classmethod
+  def __get_prompt_comfy(cls, items:dict):
+    try:
+      json_info = json.loads(items.get('prompt', {}))
+    except json.JSONDecodeError:
+      return '',''
+
+    if not isinstance(json_info, dict):
+      return '',''
+
+    for key, val in json_info.items():
+      if 'positive_text' in val['inputs']:
+        return (
+          val['inputs']['positive_text'],
+          val['inputs']['negative_text']
+        )
+        break
+
+    return '',''
