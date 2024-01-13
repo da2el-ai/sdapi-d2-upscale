@@ -27,14 +27,14 @@ class WebuiImage:
   # base64から画像を保存
   #
   @classmethod
-  def save_from_b64(cls, img_b64, pnginfo):
+  def save_from_b64(cls, img_b64, pnginfo, count=0):
     image = Image.open(io.BytesIO(base64.b64decode(img_b64.split(",",1)[0])))
     output_folder = os.path.join(cls.dir_name, 'output')
 
     if not os.path.exists(output_folder):
       os.makedirs(output_folder)
 
-    img_path = os.path.join(output_folder, cls.file_name + Config.image_suffix + '.png')
+    img_path = os.path.join(output_folder, f"{cls.file_name}{Config.image_suffix}_{count}.png")
     image.save(img_path, pnginfo=pnginfo)
 
 

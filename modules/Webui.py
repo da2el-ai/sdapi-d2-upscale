@@ -45,10 +45,12 @@ class Webui:
   #
   @classmethod
   def save_images(cls, res_json):
+    count = 0
 
     for img_b64 in res_json['images']:
       pnginfo = cls.get_pnginfo(img_b64)
-      WebuiImage.save_from_b64(img_b64, pnginfo)
+      WebuiImage.save_from_b64(img_b64, pnginfo, count)
+      count += 1
 
 
   #
