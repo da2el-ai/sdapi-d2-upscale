@@ -3,20 +3,20 @@ import re
 
 # プロンプトを削除
 def remove_prompt(prompt, items):
-  for item in items:
+  for item in items or []:
     prompt = prompt.replace(item, '')
   return prompt
 
 
 # プロンプトを追加
 def add_prompt(prompt, items):
-  prompt = prompt + ',' + ','.join(items)
+  prompt = prompt + ',' + ','.join(items or [])
   return prompt
 
 
 # プロンプトを置き換え
 def replace_prompt(prompt, items):
-  for item in items:
+  for item in items or {}:
     prompt = prompt.replace(item["before"], item["after"])
   return prompt
 
