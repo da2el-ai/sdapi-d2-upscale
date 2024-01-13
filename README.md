@@ -1,14 +1,14 @@
 
 # SDAPI D2 Upscale
 
-KohakuNAI で作った画像を一括でアップスケールする。
+StableDiffusion webui a1111、ComfyUI、NovelAI、KohakuNAI で作った画像を一括でアップスケールする。
 
 単体で動作するスプリプトです。
 StableDiffusion webui a1111 の機能拡張ではありません。
 
-- KohakuNAI の画像からプロンプトを取得
-- NAI方式の weight を SD方式に変換する
+- PNGinfoからプロンプトを取得して使用する
 - 不要なプロンプトの削除、置換や、プロンプトの追加ができる
+- NAI方式の weight を SD方式に変換できる
 
 
 # 事前準備
@@ -96,6 +96,8 @@ setting_list:
 
 # アップデート
 
+- 2024.01.14
+  - StableDiffusion webui a1111、ComfyUI、NovelAIの画像に対応
 - 2024.01.13
   - setting.yml 以外の設定ファイルを使用可能にした
   - api の batch_size に対応
