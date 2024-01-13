@@ -11,8 +11,7 @@ class Config:
 
     # 設定ファイルを読み込む
     @classmethod
-    def loadSettingFile(cls):
-      filepath = "setting.yml"
+    def loadSettingFile(cls, filepath):
 
       with open(filepath, "r", encoding="utf-8") as file:
 

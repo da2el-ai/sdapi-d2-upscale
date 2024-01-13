@@ -1,6 +1,8 @@
+import sys, os
 from modules.Config import Config
 from modules.FileSearch import FileSearch
 from modules.Webui import Webui
+
 
 # 総画像数、現在のカウント
 countTotal = 0
@@ -25,8 +27,19 @@ def searchDir():
 
 # ///////////////////////////
 def main():
+  # デフォルトの設定ファイル
+  SETTING_FILE = 'setting.yml'
+
+  setting_file = sys.argv[1] if len(sys.argv) >= 2 else SETTING_FILE
+
+  if not os.path.exists(setting_file):
+    print("設定ファイルがありません")
+    sys.exit()
+    return
+
+
   # 設定ファイルを読み込む
-  Config.loadSettingFile()
+  Config.loadSettingFile(setting_file)
 
   # ディレクトリ探索して実行
   searchDir()
