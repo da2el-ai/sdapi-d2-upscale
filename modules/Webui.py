@@ -10,9 +10,16 @@ class Webui:
   @classmethod
   def i2i_upscale(cls, img_path:str, setting:dict):
 
+    print("--- file: " + img_path)
+
     WebuiImage.load_image(img_path)
     prompt = WebuiImage.get_prompt()
     prompt = convert_prompt(prompt, setting)
+
+    # print("----------- prompt after")
+    # print(prompt["positive"])
+    # print("--")
+    # print(prompt["negative"])
 
     payload = {
       'prompt': prompt['positive'],
@@ -23,8 +30,6 @@ class Webui:
       **setting['api_params']
     }
 
-    print("-------")
-    print("file: " + img_path)
     # print(ppretty(payload))
 
     response = requests.post(
