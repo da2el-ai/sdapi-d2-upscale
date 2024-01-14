@@ -98,6 +98,7 @@ setting_list:
 
 - 2024.01.14
   - StableDiffusion webui a1111、ComfyUI、NovelAIの画像に対応
+  - KohakuNAIのバージョンでPNGinfoが違うようなので対応
 - 2024.01.13
   - setting.yml 以外の設定ファイルを使用可能にした
   - api の batch_size に対応

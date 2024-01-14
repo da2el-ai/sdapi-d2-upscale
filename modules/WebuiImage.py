@@ -97,12 +97,23 @@ class WebuiImage:
   @classmethod
   def __get_prompt_kohaku(cls, comment:str):
     comment = comment.split(', Script: Kohaku NAI', 1)[0]
-    json_info = json.loads(comment)
 
-    return (
-      json_info.get('input', ''),
-      json_info.get('parameters',{}).get('negative_prompt', '')
-    )
+    # KohakuNAIのバージョンによってPNGinfoが違うぽいので対応
+    try:
+      json_info = json.loads(comment)
+
+      return (
+        json_info.get('input', ''),
+        json_info.get('parameters',{}).get('negative_prompt', '')
+      )
+    except:
+      params = re.split(r'Negative prompt: |Steps: ', comment)
+
+      return (
+        params[0],
+        params[1] if 'Negative prompt: ' in comment else ''
+      )
+
 
   #
   # webui a1111 画像からプロンプト取得
