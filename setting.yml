@@ -8,14 +8,33 @@ image_folder: .\image
 image_suffix: _upscale
 
 setting_list:
-  # 設定名（フォルダ名にも使う）
-  upscale1.5:
+  # /////////////////////////////////
+  # プロンプトの変換をしない設定
+  simple:
     # apiパラメーター
     api_params:
       steps: 30
       cfg_scale: 7
-      denoising_strength: 0.4
+      denoising_strength: 0.55
       sampler_name: 'DPM++ 2M Karras'
+      batch_size: 1
+
+    # アップスケール比率
+    upscale: 2
+
+    # NAI weight を SD weight に変換するか
+    convert_nai_weight: False
+
+  # /////////////////////////////////
+  # プロンプトの変換をする設定
+  change_prompt:
+    # apiパラメーター
+    api_params:
+      steps: 30
+      cfg_scale: 7
+      denoising_strength: 0.55
+      sampler_name: 'DPM++ 2M Karras'
+      batch_size: 1
 
     # アップスケール比率
     upscale: 1.5
@@ -25,22 +44,23 @@ setting_list:
 
     # 削除プロンプト
     remove_positive_prompt:
-      - "[[[[[[[[[[[[[[[[[[[ai-generated]]]]]]]]]]]]]]]]]]]"
-      - "{{{{{{{best quality,amazing quality,very aesthetic,absurdres}}}}}}}"
+      - "{{{{best quality,amazing quality,very aesthetic,absurdres}}}}"
+      - "best quality, amazing quality, very aesthetic, absurdres"
 
     # 置換プロンプト
     replace_positive_prompt:
       -
-        before: 14yo
-        after: 10 yo
+        before: "flat chest"
+        after: "large breasts"
 
     # 追加プロンプト
-    # add_positive_prompt:
-    #   - "追加したいプロンプト"
+    add_positive_prompt:
+      - "(hair ribbons:1.3)"
+      - "(beachball:1.3)"
 
     # 削除ネガティブプロンプト
     remove_negative_prompt:
-      - "lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views"
+      - "nsfw, lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views,navel,"
 
     # 置換ネガティブプロンプト
     # replace_negative_prompt:
@@ -50,7 +70,8 @@ setting_list:
 
     # 追加ネガティブプロンプト
     add_negative_prompt:
-      - "negative_hand-neg,(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
+      - "negative_hand-neg"
+      - "(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
 
 
 
