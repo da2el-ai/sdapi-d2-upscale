@@ -99,6 +99,7 @@ setting_list:
 - 2024.01.18
   - feat: 個別設定項目 `replace_positive_prompt` で `type: 'regexp'` を指定すると正規表現で置換できる
   - feat: 個別設定項目 `remove_weight: True` を指定するとプロンプトのweightを除外できる。AnimagineXL系列でweight指定があると絵が破綻する事への対策
+  - feat: 個別設定項目 `debug_prompt: True` を指定するとプロンプトの変換確認だけで、生成を行わない
   - fix: 追加プロンプトが無くても「,」を追加するのを修正
 - 2024.01.14
   - StableDiffusion webui a1111、ComfyUI、NovelAIの画像に対応

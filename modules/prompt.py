@@ -72,11 +72,6 @@ def convert_prompt(prompt:dict, setting:dict):
   positive = prompt['positive'];
   negative = prompt['negative'];
 
-  # print("---------- positive")
-  # print(positive)
-  # print("---------- negative")
-  # print(negative)
-
   positive = remove_prompt(positive, setting.get('remove_positive_prompt', []))
   positive = replace_prompt(positive, setting.get('replace_positive_prompt', []))
   positive = add_prompt(positive, setting.get('add_positive_prompt', []))
@@ -92,11 +87,6 @@ def convert_prompt(prompt:dict, setting:dict):
   if setting.get('remove_weight', False):
     positive = remove_weight(positive)
     negative = remove_weight(negative)
-
-  # print("---------- positive")
-  # print(positive)
-  # print("---------- negative")
-  # print(negative)
 
   return {'positive':positive, 'negative':negative}
 

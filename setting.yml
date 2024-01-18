@@ -45,6 +45,9 @@ setting_list:
     # weight 自体を削除するか
     remove_weight: False
 
+    # プロンプトの変換だけ確認して、生成は行わない
+    debug_prompt: False
+
     # 削除プロンプト
     remove_positive_prompt:
       - "{{{{best quality,amazing quality,very aesthetic,absurdres}}}}"

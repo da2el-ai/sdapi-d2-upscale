@@ -13,13 +13,24 @@ class Webui:
     print("--- file: " + img_path)
 
     WebuiImage.load_image(img_path)
+
     prompt = WebuiImage.get_prompt()
+
+    if setting.get('debug_prompt', False):
+      print("= prompt before =")
+      print(prompt["positive"])
+      print("--")
+      print(prompt["negative"])
+
     prompt = convert_prompt(prompt, setting)
 
-    # print("----------- prompt after")
-    # print(prompt["positive"])
-    # print("--")
-    # print(prompt["negative"])
+    if setting.get('debug_prompt', False):
+      print("= prompt after =")
+      print(prompt["positive"])
+      print("--")
+      print(prompt["negative"])
+      return
+
 
     payload = {
       'prompt': prompt['positive'],
