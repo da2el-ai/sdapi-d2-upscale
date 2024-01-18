@@ -9,45 +9,60 @@ def remove_prompt(prompt, items):
 
 
 # プロンプトを追加
-def add_prompt(prompt, items):
-  prompt = prompt + ',' + ','.join(items or [])
+def add_prompt(prompt:str, items:list):
+  list = [prompt] + (items or [])
+  prompt = ','.join(list)
   return prompt
 
 
 # プロンプトを置き換え
 def replace_prompt(prompt, items):
   for item in items or {}:
-    prompt = prompt.replace(item["before"], item["after"])
+    if item.get('type','') == 'regexp':
+      prompt = re.sub(item["before"], item["after"], prompt)
+    else:
+      prompt = prompt.replace(item["before"], item["after"])
   return prompt
 
 
 # NAI weight を SD weight に変換
 def nai_to_sd(prompt):
-    RATE = 1.05
+  RATE = 1.05
 
-    def replace_function(match):
-      tag = match.group()
-      count = 0
+  def replace_function(match):
+    tag = match.group()
+    count = 0
 
-      # 文字列の両端から '{}' を削除
-      while tag.startswith(bra_start) and tag.endswith(bra_end):
-          tag = tag[1:-1]
-          count += 1
+    # 文字列の両端から '{}' を削除
+    while tag.startswith(bra_start) and tag.endswith(bra_end):
+      tag = tag[1:-1]
+      count += 1
 
-      weight = RATE ** count  if weight_type >= 1 else 1 / (RATE ** count)
-      return f"({tag}:{weight})"
+    weight = RATE ** count  if weight_type >= 1 else 1 / (RATE ** count)
+    return f"({tag}:{weight})"
 
-    weight_type = 1
-    bra_start = '{'
-    bra_end = '}'
-    prompt = re.sub(r'{+[^{}]+}+', replace_function, prompt)
 
-    weight_type = -1
-    bra_start = '['
-    bra_end = ']'
-    prompt = re.sub(r'\[+[^\[\]]+\]+', replace_function, prompt)
+  weight_type = 1
+  bra_start = '{'
+  bra_end = '}'
+  prompt = re.sub(r'{+[^{}]+}+', replace_function, prompt)
 
-    return prompt
+  weight_type = -1
+  bra_start = '['
+  bra_end = ']'
+  prompt = re.sub(r'\[+[^\[\]]+\]+', replace_function, prompt)
+
+  return prompt
+
+# プロンプトの weight を除去する
+def remove_weight(prompt):
+  def replace_function(match):
+    text, weight_str = match.group()[1:-1].rsplit(":", 1)
+    return text
+
+  prompt = re.sub(r'\(.+?:\s*[0-9.]+\s*\)', replace_function, prompt)
+  return prompt
+
 
 
 # プロンプトを変換
@@ -73,6 +88,10 @@ def convert_prompt(prompt:dict, setting:dict):
   if setting.get('convert_nai_weight', False):
     positive = nai_to_sd(positive)
     negative = nai_to_sd(negative)
+
+  if setting.get('remove_weight', False):
+    positive = remove_weight(positive)
+    negative = remove_weight(negative)
 
   # print("---------- positive")
   # print(positive)

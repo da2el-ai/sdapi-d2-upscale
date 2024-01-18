@@ -42,6 +42,9 @@ setting_list:
     # NAI weight を SD weight に変換するか
     convert_nai_weight: True
 
+    # weight 自体を削除するか
+    remove_weight: False
+
     # 削除プロンプト
     remove_positive_prompt:
       - "{{{{best quality,amazing quality,very aesthetic,absurdres}}}}"
@@ -52,6 +55,11 @@ setting_list:
       -
         before: "flat chest"
         after: "large breasts"
+      # 正規表現を使う時は type: 'regexp' を指定
+      -
+        type: "regexp"
+        before: "[0-9]+yo"
+        after: "17yo"
 
     # 追加プロンプト
     add_positive_prompt:
@@ -60,18 +68,20 @@ setting_list:
 
     # 削除ネガティブプロンプト
     remove_negative_prompt:
-      - "nsfw, lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views,navel,"
+      # - "nsfw, lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], lowres,bad,text,error,missing,extra,fewer,cropped,jpg artifacts,worst quality,bad quality,watermark,displeasing,unfinished,chromatic aberration,scan,scan artifacts,floating cock,censored,bar censor,multiple views,navel,"
 
     # 置換ネガティブプロンプト
-    # replace_negative_prompt:
-    #   -
-    #     before: aaaa
-    #     after: bbbb
+    replace_negative_prompt:
+      # 正規表現でネガティブを全入れ替えする例
+      -
+        type: "regexp"
+        before: "^.*$"
+        after: "(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
 
     # 追加ネガティブプロンプト
     add_negative_prompt:
-      - "negative_hand-neg"
-      - "(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
+      # - "negative_hand-neg"
+      # - "(worst quality, low quality:1.4),(lip, nose, tooth, rouge, lipstick, eyeshadow:1.4),(jpeg artifacts:1.4),"
 
 
 
