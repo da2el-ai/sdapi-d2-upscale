@@ -86,7 +86,7 @@ def convert_prompt(prompt:dict, setting:dict):
 
   if setting.get('remove_weight', False):
     positive = remove_weight(positive)
-    negative = remove_weight(negative)
+    # negative = remove_weight(negative)
 
   return {'positive':positive, 'negative':negative}
 
