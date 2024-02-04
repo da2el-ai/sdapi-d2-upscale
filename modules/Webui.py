@@ -16,7 +16,7 @@ class Webui:
 
     prompt = WebuiImage.get_prompt()
 
-    if setting.get('debug_prompt', False):
+    if Config.debug_prompt or setting.get('debug_prompt', False):
       print("= prompt before =")
       print(prompt["positive"])
       print("--")
@@ -24,13 +24,12 @@ class Webui:
 
     prompt = convert_prompt(prompt, setting)
 
-    if setting.get('debug_prompt', False):
+    if Config.debug_prompt or setting.get('debug_prompt', False):
       print("= prompt after =")
       print(prompt["positive"])
       print("--")
       print(prompt["negative"])
       return
-
 
     payload = {
       'prompt': prompt['positive'],
@@ -41,7 +40,9 @@ class Webui:
       **setting['api_params']
     }
 
-    # print(ppretty(payload))
+    # プロンプトの変換確認のみなら抜ける
+    if Config.debug_prompt or setting.get('debug_prompt', False):
+      return
 
     response = requests.post(
       url = f'{Config.webui_url}/sdapi/v1/img2img',
