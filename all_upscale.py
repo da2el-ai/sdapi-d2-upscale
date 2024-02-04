@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, argparse
 from modules.Config import Config
 from modules.FileSearch import FileSearch
 from modules.Webui import Webui
@@ -26,20 +26,30 @@ def searchDir():
 
 
 # ///////////////////////////
-def main():
-  # デフォルトの設定ファイル
-  SETTING_FILE = 'setting.yml'
+# オプションをチェック
+def parseOptions():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-d', '--debug_prompt', action="store_true", help="アップスケールは行わずプロンプト変換の確認のみ")
+  parser.add_argument('-c', '--config_file', type=str, help="設定ファイルを指定")
+  args = parser.parse_args()
 
-  setting_file = sys.argv[1] if len(sys.argv) >= 2 else SETTING_FILE
+  if(args.config_file):
+    Config.setting_file = args.config_file
 
-  if not os.path.exists(setting_file):
+  if not os.path.exists(Config.setting_file):
     print("設定ファイルがありません")
     sys.exit()
     return
 
+  Config.debug_prompt = args.debug_prompt
+
+
+# ///////////////////////////
+def main():
+  parseOptions()
 
   # 設定ファイルを読み込む
-  Config.loadSettingFile(setting_file)
+  Config.loadSettingFile(Config.setting_file)
 
   # ディレクトリ探索して実行
   searchDir()
