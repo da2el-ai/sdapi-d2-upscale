@@ -4,6 +4,11 @@ import yaml
 from ppretty import ppretty
 
 class Config:
+    # コマンドライン引数から取得する値
+    setting_file = 'setting.yml'
+    debug_prompt = False
+
+    # 設定ファイルから取得する値
     webui_url = ''
     image_folder = ''
     image_suffix = ''
