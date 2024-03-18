@@ -1,7 +1,7 @@
 import sys, os, argparse
 from modules.Config import Config
 from modules.FileSearch import FileSearch
-from modules.Webui import Webui
+from modules import webui
 
 
 # 総画像数、現在のカウント
@@ -21,8 +21,12 @@ def searchDir():
 
   # 設定毎に処理を実行
   for name in Config.setting_list:
+    # api options があれば実行
+    if(Config.setting_list[name].get("api_options", None)):
+      webui.option_api.set_options(Config.setting_list[name])
+
     for imgPath in FileSearch.filesDict[name]:
-      Webui.i2i_upscale(imgPath, Config.setting_list[name])
+      webui.img2img_api.i2i_upscale(imgPath, Config.setting_list[name])
 
 
 # ///////////////////////////
